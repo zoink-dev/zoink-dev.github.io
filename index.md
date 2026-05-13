@@ -16,7 +16,7 @@ zoink config init
 zoink up
 ```
 
-[View on GitHub »](https://github.com/zoink-dev/zoink-cli) &nbsp;·&nbsp; [npm package »](https://www.npmjs.com/package/@zoink-dev/zoink-cli) &nbsp;·&nbsp; [Architecture »](./ARCHITECTURE.md) &nbsp;·&nbsp; [Full Product Guide »](./PRODUCT.md)
+[View on GitHub »](https://github.com/zoink-dev/zoink-cli) &nbsp;·&nbsp; [npm package »](https://www.npmjs.com/package/@zoink-dev/zoink-cli) &nbsp;·&nbsp;
 
 ---
 
@@ -25,7 +25,6 @@ zoink up
 - [What is Zoink?](#what-is-zoink)
 - [Features](#features)
 - [Quick start](#quick-start)
-- [Example `swarm.yaml`](#example-swarmyaml)
 - [Commands](#commands)
 - [Dashboards](#dashboards)
 - [Daemon & remote Kanban](#daemon--remote-kanban)
@@ -92,104 +91,6 @@ Each agent runs in its own isolated Docker container with persistent state, heal
 - **Provider/auth block** — `provider.name` + `keyEnv` / `key` / `baseUrl` for OpenAI, Anthropic, OpenRouter, Google, and OpenAI-compatible gateways
 - **Global config** — `~/.zoink/config.yml` for `default_model`, `dashboard.theme`, `chat.adapter`, and `api_keys.<provider>`
 - **Role templates** — Built-in (`pm`, `coder`, `researcher`, `devops`) plus user-created templates under `~/.zoink/roles/`
-
----
-
-## Quick start
-
-```bash
-# 1. Install
-npm install -g @zoink-dev/zoink-cli
-
-# 2. Scaffold a swarm from a starter template
-mkdir my-swarm && cd my-swarm
-zoink config init
-
-# 3. Provide credentials
-export OPENAI_API_KEY="sk-..."
-export GATEWAY_TOKEN="$(openssl rand -hex 32)"   # optional, for agent chat
-
-# 4. Validate and launch
-zoink config validate
-zoink up
-
-# 5. Inspect
-zoink ps
-zoink agent stats pm-agent
-
-# 6. Open the dashboard (terminal or browser)
-zoink dashboard
-#  — or —
-export KANBAN_TOKEN="$(openssl rand -hex 32)"
-zoink daemon start --token-env KANBAN_TOKEN
-
-# 7. Hot-reload config when you change swarm.yaml
-zoink config reload --mode hybrid
-
-# 8. Teardown (state is preserved)
-zoink down
-```
-
----
-
-## Example `swarm.yaml`
-
-```yaml
-version: '2.0'
-name: hybrid-swarm
-workspace: ./workspace
-
-frameworks:
-  openclaw:
-    defaultImage: ghcr.io/openclaw/openclaw:latest
-    reloadMode: hybrid
-  hermes:
-    defaultImage: nousresearch/hermes-agent:v2026.4.23
-
-orchestration:
-  approval_mode: false
-  approval_timeout_seconds: 300
-
-agents:
-  - name: pm-agent
-    role: pm
-    runtime: openclaw
-    model: gpt-4
-    provider:
-      name: openai
-      keyEnv: OPENAI_API_KEY
-    gateway:
-      enabled: true
-      port: 18789
-      authTokenEnv: GATEWAY_TOKEN
-    ports:
-      - '18789:18789'
-
-  - name: coder-agent
-    role: coder
-    runtime: openclaw
-    model: gpt-4
-    provider:
-      name: openai
-      keyEnv: OPENAI_API_KEY
-    cpu_limit: '2.0'
-    memory_limit: '2GB'
-    autoPickup: true
-    pickupIntervalSeconds: 300
-    skills:
-      - refactoring
-      - testing
-
-  - name: researcher-agent
-    role: researcher
-    runtime: hermes
-    model: gpt-4
-    provider:
-      name: openai
-      keyEnv: OPENAI_API_KEY
-    profiles: 2
-    temperature: 0.2
-```
 
 ---
 
@@ -317,6 +218,6 @@ Mixed-framework swarms share one Docker network and one workspace, so OpenClaw a
 
 ## License & credits
 
-Zoink is released under the [MIT License](https://github.com/zoink-dev/zoink-cli/blob/main/LICENSE) and built on top of [OpenClaw](https://github.com/openclaw/openclaw).
+Zoink is released under the [MIT License](https://github.com/zoink-dev/zoink-cli/blob/main/LICENSE).
 
 **Made with care by the Zoink community.**
